@@ -116,14 +116,40 @@ widget_ids! {
         // Scrollbar
         canvas_scrollbar,
 
+        menu,
+        list,
     }
 }
 
 
 /// Instantiate a GUI demonstrating every widget available in conrod.
 pub fn gui(ui: &mut conrod::UiCell, ids: &Ids, app: &mut DemoApp) {
-    use conrod::{widget, Colorable, Labelable, Positionable, Sizeable, Widget};
+    use conrod::{color, widget, Colorable, Labelable, Positionable, Sizeable, Widget};
     use std::iter::once;
+
+    widget::Canvas::new()
+        .top_left_of(ui.window)
+        .w_h(1000., 1000.)
+        .color(color::BLUE)
+        .set(ids.menu, ui);
+
+    let (mut items, _) = widget::List::flow_down(10)
+        .item_size(50.)
+        .scrollbar_on_top()
+        .middle_of(ids.menu)
+        .wh_of(ids.menu)
+        .set(ids.list, ui);
+
+    while let Some(item) = items.next(ui) {
+        let i = item.i;
+        let toggle = widget::Toggle::new(false)
+            .label("FOO")
+            .label_color(color::WHITE)
+            .color(color::LIGHT_BLUE);
+        item.set(toggle, ui);
+    }
+
+    return;
 
     const MARGIN: conrod::Scalar = 30.0;
     const SHAPE_GAP: conrod::Scalar = 50.0;
